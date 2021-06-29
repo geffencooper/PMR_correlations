@@ -24,12 +24,12 @@ def extract_zipfile(src_path, dest_path):
 if __name__ == "__main__":
 
     # Step 1: extract all the zip files
-    # zip_dir_name = "C:/Users/gcooper/Downloads/"
-    # zip_dest_path = "C:/Users/gcooper/Downloads/avec_data"
+    zip_dir_name = "C:/Users/gcooper/Downloads/"
+    zip_dest_path = "C:/Users/gcooper/Downloads/avec_data"
 
-    # zip_files = [(zip_dir_name + file_name) for file_name in os.listdir(zip_dir_name) if file_name.startswith("drive-download")]
-    # for zf in zip_files:
-    #     extract_zipfile(zf,zip_dest_path)
+    zip_files = [(zip_dir_name + file_name) for file_name in os.listdir(zip_dir_name) if file_name.startswith("drive-download")]
+    for zf in zip_files:
+        extract_zipfile(zf,zip_dest_path)
 
     # Step 2: extract all the tar files
     tar_dir_name = "C:/Users/gcooper/Downloads/avec_data/"

@@ -5,25 +5,18 @@ this is a class is used to get and store
 the correlations of feature values with PHQ-labels
 '''
 
-#from avf_set import avfSet as avf
+from avf_set import avfSet
+from corr_set import corrSet
 import pandas as pd
 import os
 import numpy as np
 
-class corrSet:
-    def __init__(self):
-        #self.avf_set = avf_set
-        l=["f1_mean", "f2_mean", "f1_var", "f2_var", "f1_std", "f2_std", "f1_range", "f2_range"]
-        m=["corr_coeff","cc2","cc3"]
-        # create a table of features and correlation coefficients
-        self.corr_set = pd.DataFrame(index=m)
-        for i,av in enumerate(l):
-            self.corr_set.insert(i,av,0.0)
-
-        for j,av in enumerate(l):
-            for i,row in enumerate(m):
-                self.corr_set[av][row] = i+j
-        print(self.corr_set)
 
 if __name__ == "__main__":
-    c = corrSet()
+    
+    # table = avfSet("../../avec_data/")
+    # print(table.avf_set)
+    # table.avf_set.to_csv("patient_features.csv")
+    features_path = "../../avec_data/patient_features.csv"
+    labels_path = "../../avec_data/Detailed_PHQ8_Labels.csv"
+    c = corrSet(features_path,labels_path)

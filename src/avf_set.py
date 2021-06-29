@@ -14,7 +14,7 @@ class avfSet:
     def __init__(self,avec_path_prefix):
         # path to the directory with patient data
         self.avec_path_prefix = avec_path_prefix
-        self.patients = os.listdir()
+        self.patients = os.listdir("../../avec_data")
 
         # the features we want from each patient
         self.av_features = ["f1_mean", "f2_mean", "f1_var", "f2_var", "f1_std", "f2_std", "f1_range", "f2_range"]
@@ -26,7 +26,9 @@ class avfSet:
 
         # extract the feature values and fill the table
         for patient_i, patient in enumerate(self.patients): # iterate over the rows
-            self.extract_features(patient_i)
+            self.extract_features(str(self.patients[patient_i])[:-2])
+            if patient_i % 25 == 0:
+                print(patient_i)
 
     def extract_features(self, patient_num):
         patient = lf(patient_num, self.avec_path_prefix)
@@ -35,15 +37,17 @@ class avfSet:
         f1 = patient.get_f1()
         f2 = patient.get_f2()
 
-        self.avf_set.at[patient_num,"f1_mean"] = np.mean(f1)
-        self.avf_set.at[patient_num,"f2_mean"] = np.mean(f2)
+        patient_index = str(patient_num)+"_P"
 
-        self.avf_set.at[patient_num,"f1_var"] = np.var(f1)
-        self.avf_set.at[patient_num,"f2_var"] = np.var(f2)
+        self.avf_set.at[patient_index,"f1_mean"] = np.mean(f1)
+        self.avf_set.at[patient_index,"f2_mean"] = np.mean(f2)
 
-        self.avf_set.at[patient_num,"f1_std"] = np.std(f1)
-        self.avf_set.at[patient_num,"f2_std"] = np.std(f2)
+        self.avf_set.at[patient_index,"f1_var"] = np.var(f1)
+        self.avf_set.at[patient_index,"f2_var"] = np.var(f2)
 
-        self.avf_set.at[patient_num,"f1_range"] = np.max(f1) - np.min(f1)
-        self.avf_set.at[patient_num,"f2_range"] = np.max(f2) - np.min(f2)
+        self.avf_set.at[patient_index,"f1_std"] = np.std(f1)
+        self.avf_set.at[patient_index,"f2_std"] = np.std(f2)
+
+        self.avf_set.at[patient_index,"f1_range"] = np.max(f1) - np.min(f1)
+        self.avf_set.at[patient_index,"f2_range"] = np.max(f2) - np.min(f2)
 
