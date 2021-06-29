@@ -10,6 +10,7 @@ import pandas as pd
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import stats
 
 class corrSet:
     def __init__(self,avf_path,labels_path):
@@ -26,15 +27,26 @@ class corrSet:
 
     def calc_corr(self):
         # first extract data for patients that have labels
-        # data_ids = []
-        # for index, row in self.avf_set.iterrows():
-        #     data_ids.append(str(row[0])[:-2])
-        f1_list = []
+        label_ids = []
+        data_ids = self.avf_set.index
 
         for index, row in self.labels.iterrows():
-            f1_list.append(self.avf_set.at[str(row[0])+"_P","f2_range"])
+            label_ids.append(str(row[0])+"_P")
+
+        to_remove = np.setdiff1d(data_ids,label_ids)
+        
+        for id in to_remove:
+            self.avf_set = self.avf_set.drop(index=id)
+
+        # now find all the correlation coefficients
+        for feature in self.avf_set:
+            corr, p = stats.spearmanr(self.avf_set[feature].values,self.labels["PHQ_8Total"].values)
+            print("corr:", corr, "p: ", p)
+
+        # for index, row in self.labels.iterrows():
+        #     f1_list.append(self.avf_set.at[str(row[0])+"_P","f2_range"])
         
         
-        scores = self.labels["PHQ_8Total"].values
-        plt.scatter(f1_list,scores)
-        plt.show()
+        # scores = self.labels["PHQ_8Total"].values
+        # plt.scatter(f1_list,scores)
+        # plt.show()
