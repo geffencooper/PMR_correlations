@@ -41,7 +41,7 @@ class corrSet:
         # now find all the correlation coefficients
         for feature in self.avf_set:
             corr, p = stats.spearmanr(self.avf_set[feature].values,self.labels["PHQ_8Total"].values)
-            print("corr:", corr, "p: ", p)
+            print("feature:", feature, "---> corr:", corr, "p: ", p)
 
         # for index, row in self.labels.iterrows():
         #     f1_list.append(self.avf_set.at[str(row[0])+"_P","f2_range"])

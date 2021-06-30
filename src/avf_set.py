@@ -17,7 +17,8 @@ class avfSet:
         self.patients = os.listdir("../../avec_data")
 
         # the features we want from each patient
-        self.av_features = ["f1_mean", "f2_mean", "f1_var", "f2_var", "f1_std", "f2_std", "f1_range", "f2_range"]
+        self.av_features = ["f1_mean", "f2_mean", "f1_var", "f2_var", "f1_std", "f2_std", "f1_range", "f2_range", \
+                            "mfcc0","mfcc1","mfcc2","mfcc3","mfcc4","mfcc5","mfcc6","mfcc7","mfcc8","mfcc9","mfcc10","mfcc11","mfcc12"]
         
         # create a table of patients and the corresponding features
         self.avf_set = pd.DataFrame(index=self.patients)
@@ -50,4 +51,18 @@ class avfSet:
 
         self.avf_set.at[patient_index,"f1_range"] = np.max(f1) - np.min(f1)
         self.avf_set.at[patient_index,"f2_range"] = np.max(f2) - np.min(f2)
+
+        self.avf_set.at[patient_index,"mfcc0"] = np.mean(patient.get_mfcc0())
+        self.avf_set.at[patient_index,"mfcc1"] = np.mean(patient.get_mfcc1())
+        self.avf_set.at[patient_index,"mfcc2"] = np.mean(patient.get_mfcc2())
+        self.avf_set.at[patient_index,"mfcc3"] = np.mean(patient.get_mfcc3())
+        self.avf_set.at[patient_index,"mfcc4"] = np.mean(patient.get_mfcc4())
+        self.avf_set.at[patient_index,"mfcc5"] = np.mean(patient.get_mfcc5())
+        self.avf_set.at[patient_index,"mfcc6"] = np.mean(patient.get_mfcc6())
+        self.avf_set.at[patient_index,"mfcc7"] = np.mean(patient.get_mfcc7())
+        self.avf_set.at[patient_index,"mfcc8"] = np.mean(patient.get_mfcc8())
+        self.avf_set.at[patient_index,"mfcc9"] = np.mean(patient.get_mfcc9())
+        self.avf_set.at[patient_index,"mfcc10"] = np.mean(patient.get_mfcc10())
+        self.avf_set.at[patient_index,"mfcc11"] = np.mean(patient.get_mfcc11())
+        self.avf_set.at[patient_index,"mfcc12"] = np.mean(patient.get_mfcc12())
 
