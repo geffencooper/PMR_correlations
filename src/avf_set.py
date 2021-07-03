@@ -31,7 +31,7 @@ class avfSet:
             if patient_i % 25 == 0:
                 print(patient_i)
 
-    def extract_features(self, patient_num):
+    def extract_features(self, patient_num,start_samples=None,end_samples=None):
         patient = lf(patient_num, self.avec_path_prefix)
 
         # get desired features
