@@ -17,6 +17,8 @@ class transcriptParser:
     # gets the approximate start and end times of every iteration
     # of the desired text chunks (ex: /ai/)
     def get_time_splices(self,patient_num,text_chunks):
+        if text_chunks == None:
+            return (None,None)
 
         # get the transcript
         path = os.path.join(self.avec_path_prefix,
@@ -128,11 +130,15 @@ class transcriptParser:
         start_samples = []
         end_samples = []
         sample_time = 0.01
+        sample_rate = 100
 
-        for st,et in zip(start_times,end_times):
-            num_samples = (et-st)/sample_time
-            start_samples.append(start_times/sample_time)
-            end_samples.append(start_times/sample_time + num_samples)
+        # for st,et in zip(start_times,end_times):
+        #     num_samples = (et-st)/sample_time
+        #     start_samples.append(st/sample_time)
+        #     end_samples.append(st/sample_time + num_samples)
+
+        start_samples = [int(x*100) for x in start_times]
+        end_samples = [int(x*100) for x in end_times]
 
         return (start_samples, end_samples)
 

@@ -46,9 +46,14 @@ if __name__ == "__main__":
     #     time.sleep(3)
     #     sd.stop()
 
-    txt_parser = tp("../../avec_data/")
-    txt_parser.generate_filtered_features(["ou"])
+    #txt_parser = tp("../../avec_data/")
+    #txt_parser.generate_filtered_features(["ou"])
 
+    # txt_parser = tp("../../avec_data/")
+    # starts,ends = txt_parser.get_time_splices(["ou"])
+    table = avfSet("../../avec_data/",["ou"])
+    table.avf_set.to_csv("../data/patient_features_filtered.csv")
+    
     
         
 
