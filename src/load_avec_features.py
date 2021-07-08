@@ -23,6 +23,9 @@ class avecFeatures:
         # create a pandas dataframe from the MFCCs and deltas
         self.mfccs = self.get_mfccs()
 
+        # create a pandas dataframe from the facial features
+        self.face_features = self.get_face_features()
+
     # extracts the geneva features as a pandas dataframe
     def get_egemaps(self):
         path = os.path.join(self.avec_path_prefix,
@@ -36,6 +39,13 @@ class avecFeatures:
                             (str(self.patient_num)+"_P/features/"),
                             (str(self.patient_num)+"_OpenSMILE2.3.0_mfcc.csv"))
         return pd.read_csv(path,sep=";")
+
+    # extract facial features as a pandas dataframe
+    def get_face_features(self):
+        path = os.path.join(self.avec_path_prefix,
+                            (str(self.patient_num)+"_P/features/"),
+                            (str(self.patient_num)+"_OpenFace2.1.0_Pose_gaze_AUs.csv"))
+        return pd.read_csv(path,sep=",")
 
     # get the f1 frequencies as a numpy array
     def get_f1(self):
@@ -168,6 +178,28 @@ class avecFeatures:
     # get HNR as a numpy array
     def get_hnr(self):
         return self.patient_egemaps["HNRdBACF_sma3nz"].values
+
+    # get AU12 as a numpy array
+    def get_au12(self):
+        return self.face_features["AU12_r"].values
+
+    # get AU14 as a numpy array
+    def get_au14(self):
+        return self.face_features["AU14_r"].values
+
+    # get AU15 as a numpy array
+    def get_au15(self):
+        return self.face_features["AU15_r"].values
+
+    
+
+    # get vertical head pose as a numpy array
+    def get_head_pitch(self):
+        return self.face_features["pose_Rx"].values
+
+    # get vertical eye gaze angle as a numpy array (avg over both eyes)
+    def get_eye_gaze(self):
+        return (self.face_features["gaze_0_y"].values + self.face_features["gaze_1_y"].values)/2
 
     # plots the specified data arrays, data is a list of arrays
     def plot_data(self,data):

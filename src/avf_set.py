@@ -21,7 +21,8 @@ class avfSet:
         self.av_features = ["f1_mean", "f2_mean", "f1_var", "f2_var", "f1_std", "f2_std", "f1_range", "f2_range", \
                             "mfcc0","mfcc1","mfcc2","mfcc3","mfcc4","mfcc5","mfcc6","mfcc7","mfcc8","mfcc9","mfcc10","mfcc11","mfcc12", \
                             "mfcc0_de","mfcc1_de","mfcc2_de","mfcc3_de","mfcc4_de","mfcc5_de","mfcc6_de","mfcc7_de","mfcc8_de","mfcc9_de","mfcc10_de","mfcc11_de","mfcc12_de", \
-                            "F0_var", "F0_std", "Loudness_var", "Loudness_std"]
+                            "F0_var", "F0_std", "Loudness_var", "Loudness_std","jitter","shimmer","hnr", \
+                            "au_12","au_14","au_15"]
         
         # create a table of patients and the corresponding features
         self.avf_set = pd.DataFrame(index=self.patients)
@@ -29,20 +30,20 @@ class avfSet:
             self.avf_set.insert(i,av,0.0)
 
         # used to get the start and end splices for the desired portions
-        txt_parser = tp("../../avec_data/")
+        self.txt_parser = tp("../../avec_data/")
         
         # extract the feature values and fill the table
         for patient_i, patient in enumerate(self.patients): # iterate over the rows
-            start_times,end_times = txt_parser.get_time_splices(patient[:-2],chunk_list)
-            start_samples,end_samples = txt_parser.convert_time_to_row(start_times,end_times)
-            self.extract_features(patient[:-2],start_samples,end_samples)
+            start_times,end_times = self.txt_parser.get_time_splices(patient[:-2],chunk_list)
+            #start_samples,end_samples = self.txt_parser.convert_time_to_row(start_times,end_times)
+            self.extract_features(patient[:-2],start_times,end_times)
             print("patient:",patient,"num responses:",len(start_times))
 
-    def extract_features(self, patient_num,start_samples=None,end_samples=None):
+    def extract_features(self, patient_num,start_times=None,end_times=None):
         patient = lf(patient_num, self.avec_path_prefix)
         patient_index = str(patient_num)+"_P"
 
-        # get desired features
+        # get desired audio features
         f1 = patient.get_f1()
         f2 = patient.get_f2()
 
@@ -81,11 +82,20 @@ class avfSet:
         shimmer = patient.get_shimmer()
         hnr = patient.get_hnr()
 
-        # put into a list
-        base_features = [f1,f2,mfcc0,mfcc1,mfcc2,mfcc3,mfcc4,mfcc5,mfcc6,mfcc7,mfcc8,mfcc9,mfcc10,mfcc11,mfcc12,del_mfcc0,del_mfcc1,del_mfcc2,del_mfcc3,del_mfcc4,del_mfcc5,del_mfcc6,del_mfcc7,del_mfcc8,del_mfcc9,del_mfcc10,del_mfcc11,del_mfcc12,f0,loudness,jitter,shimmer,hnr]
 
+        # get desired facial features
+        au12 = patient.get_au12()
+        au14 = patient.get_au14()
+        au15 = patient.get_au15()
+
+        # put into a list
+        base_audio_features = [f1,f2,mfcc0,mfcc1,mfcc2,mfcc3,mfcc4,mfcc5,mfcc6,mfcc7,mfcc8,mfcc9,mfcc10,mfcc11,mfcc12,del_mfcc0,del_mfcc1,del_mfcc2,del_mfcc3,del_mfcc4,del_mfcc5,del_mfcc6,del_mfcc7,del_mfcc8,del_mfcc9,del_mfcc10,del_mfcc11,del_mfcc12,f0,loudness,jitter,shimmer,hnr]
+
+        base_visual_features = [au12,au14,au15]
+
+        start_samples,end_samples = self.txt_parser.convert_time_to_row(100,start_times,end_times)
         if start_samples != None and end_samples != None:
-            # feature values at specific times
+            # audio feature values at specific times
             f1_filtered=f2_filtered=mfcc0_filtered=mfcc1_filtered=mfcc2_filtered=mfcc3_filtered=mfcc4_filtered= \
             mfcc5_filtered=mfcc6_filtered=mfcc7_filtered=mfcc8_filtered=mfcc9_filtered=mfcc10_filtered=mfcc11_filtered=mfcc12_filtered= \
             del_mfcc0_filtered=del_mfcc1_filtered=del_mfcc2_filtered=del_mfcc3_filtered=del_mfcc4_filtered=del_mfcc5_filtered=del_mfcc6_filtered= \
@@ -93,7 +103,7 @@ class avfSet:
             f0_filtered=loudness_filtered=jitter_filtered=shimmer_filtered=hnr_filtered = np.zeros(1)
             
             # put into a list
-            filtered_base_features = [f1_filtered,f2_filtered,mfcc0_filtered,mfcc1_filtered,mfcc2_filtered,mfcc3_filtered,mfcc4_filtered, \
+            filtered_base_audio_features = [f1_filtered,f2_filtered,mfcc0_filtered,mfcc1_filtered,mfcc2_filtered,mfcc3_filtered,mfcc4_filtered, \
             mfcc5_filtered,mfcc6_filtered,mfcc7_filtered,mfcc8_filtered,mfcc9_filtered,mfcc10_filtered,mfcc11_filtered,mfcc12_filtered, \
             del_mfcc0_filtered,del_mfcc1_filtered,del_mfcc2_filtered,del_mfcc3_filtered,del_mfcc4_filtered,del_mfcc5_filtered,del_mfcc6_filtered, \
             del_mfcc7_filtered,del_mfcc8_filtered,del_mfcc9_filtered,del_mfcc10_filtered,del_mfcc11_filtered,del_mfcc12_filtered,
@@ -101,11 +111,11 @@ class avfSet:
 
             # go over all time splices and append to filtered feature lists
             for start,end in zip(start_samples,end_samples):
-                for i,filtered_feature in enumerate(filtered_base_features):
-                    filtered_base_features[i]=np.append(filtered_base_features[i],base_features[i][start:end])
+                for i,filtered_feature in enumerate(filtered_base_audio_features):
+                    filtered_base_audio_features[i]=np.append(filtered_base_audio_features[i],base_audio_features[i][start:end])
 
-            f1_filtered = filtered_base_features[0]
-            f2_filtered = filtered_base_features[1]   
+            f1_filtered = filtered_base_audio_features[0]
+            f2_filtered = filtered_base_audio_features[1]   
             self.avf_set.at[patient_index,"f1_mean"] = np.mean(f1_filtered)
             self.avf_set.at[patient_index,"f2_mean"] = np.mean(f2_filtered)
 
@@ -118,43 +128,63 @@ class avfSet:
             self.avf_set.at[patient_index,"f1_range"] = np.max(f1_filtered) - np.min(f1_filtered)
             self.avf_set.at[patient_index,"f2_range"] = np.max(f2_filtered) - np.min(f2_filtered)
 
-            self.avf_set.at[patient_index,"mfcc0"] = np.mean(filtered_base_features[2])
-            self.avf_set.at[patient_index,"mfcc1"] = np.mean(filtered_base_features[3])
-            self.avf_set.at[patient_index,"mfcc2"] = np.mean(filtered_base_features[4])
-            self.avf_set.at[patient_index,"mfcc3"] = np.mean(filtered_base_features[5])
-            self.avf_set.at[patient_index,"mfcc4"] = np.mean(filtered_base_features[6])
-            self.avf_set.at[patient_index,"mfcc5"] = np.mean(filtered_base_features[7])
-            self.avf_set.at[patient_index,"mfcc6"] = np.mean(filtered_base_features[8])
-            self.avf_set.at[patient_index,"mfcc7"] = np.mean(filtered_base_features[9])
-            self.avf_set.at[patient_index,"mfcc8"] = np.mean(filtered_base_features[10])
-            self.avf_set.at[patient_index,"mfcc9"] = np.mean(filtered_base_features[11])
-            self.avf_set.at[patient_index,"mfcc10"] = np.mean(filtered_base_features[12])
-            self.avf_set.at[patient_index,"mfcc11"] = np.mean(filtered_base_features[13])
-            self.avf_set.at[patient_index,"mfcc12"] = np.mean(filtered_base_features[14])
+            self.avf_set.at[patient_index,"mfcc0"] = np.mean(filtered_base_audio_features[2])
+            self.avf_set.at[patient_index,"mfcc1"] = np.mean(filtered_base_audio_features[3])
+            self.avf_set.at[patient_index,"mfcc2"] = np.mean(filtered_base_audio_features[4])
+            self.avf_set.at[patient_index,"mfcc3"] = np.mean(filtered_base_audio_features[5])
+            self.avf_set.at[patient_index,"mfcc4"] = np.mean(filtered_base_audio_features[6])
+            self.avf_set.at[patient_index,"mfcc5"] = np.mean(filtered_base_audio_features[7])
+            self.avf_set.at[patient_index,"mfcc6"] = np.mean(filtered_base_audio_features[8])
+            self.avf_set.at[patient_index,"mfcc7"] = np.mean(filtered_base_audio_features[9])
+            self.avf_set.at[patient_index,"mfcc8"] = np.mean(filtered_base_audio_features[10])
+            self.avf_set.at[patient_index,"mfcc9"] = np.mean(filtered_base_audio_features[11])
+            self.avf_set.at[patient_index,"mfcc10"] = np.mean(filtered_base_audio_features[12])
+            self.avf_set.at[patient_index,"mfcc11"] = np.mean(filtered_base_audio_features[13])
+            self.avf_set.at[patient_index,"mfcc12"] = np.mean(filtered_base_audio_features[14])
 
-            self.avf_set.at[patient_index,"mfcc0_de"] = np.mean(filtered_base_features[15])
-            self.avf_set.at[patient_index,"mfcc1_de"] = np.mean(filtered_base_features[16])
-            self.avf_set.at[patient_index,"mfcc2_de"] = np.mean(filtered_base_features[17])
-            self.avf_set.at[patient_index,"mfcc3_de"] = np.mean(filtered_base_features[18])
-            self.avf_set.at[patient_index,"mfcc4_de"] = np.mean(filtered_base_features[19])
-            self.avf_set.at[patient_index,"mfcc5_de"] = np.mean(filtered_base_features[20])
-            self.avf_set.at[patient_index,"mfcc6_de"] = np.mean(filtered_base_features[21])
-            self.avf_set.at[patient_index,"mfcc7_de"] = np.mean(filtered_base_features[22])
-            self.avf_set.at[patient_index,"mfcc8_de"] = np.mean(filtered_base_features[23])
-            self.avf_set.at[patient_index,"mfcc9_de"] = np.mean(filtered_base_features[24])
-            self.avf_set.at[patient_index,"mfcc10_de"] = np.mean(filtered_base_features[25])
-            self.avf_set.at[patient_index,"mfcc11_de"] = np.mean(filtered_base_features[26])
-            self.avf_set.at[patient_index,"mfcc12_de"] = np.mean(filtered_base_features[27])
+            self.avf_set.at[patient_index,"mfcc0_de"] = np.mean(filtered_base_audio_features[15])
+            self.avf_set.at[patient_index,"mfcc1_de"] = np.mean(filtered_base_audio_features[16])
+            self.avf_set.at[patient_index,"mfcc2_de"] = np.mean(filtered_base_audio_features[17])
+            self.avf_set.at[patient_index,"mfcc3_de"] = np.mean(filtered_base_audio_features[18])
+            self.avf_set.at[patient_index,"mfcc4_de"] = np.mean(filtered_base_audio_features[19])
+            self.avf_set.at[patient_index,"mfcc5_de"] = np.mean(filtered_base_audio_features[20])
+            self.avf_set.at[patient_index,"mfcc6_de"] = np.mean(filtered_base_audio_features[21])
+            self.avf_set.at[patient_index,"mfcc7_de"] = np.mean(filtered_base_audio_features[22])
+            self.avf_set.at[patient_index,"mfcc8_de"] = np.mean(filtered_base_audio_features[23])
+            self.avf_set.at[patient_index,"mfcc9_de"] = np.mean(filtered_base_audio_features[24])
+            self.avf_set.at[patient_index,"mfcc10_de"] = np.mean(filtered_base_audio_features[25])
+            self.avf_set.at[patient_index,"mfcc11_de"] = np.mean(filtered_base_audio_features[26])
+            self.avf_set.at[patient_index,"mfcc12_de"] = np.mean(filtered_base_audio_features[27])
 
-            self.avf_set.at[patient_index,"F0_var"] = np.var(filtered_base_features[28])
-            self.avf_set.at[patient_index,"F0_std"] = np.std(filtered_base_features[28])
-            self.avf_set.at[patient_index,"Loudness_var"] = np.var(filtered_base_features[29])
-            self.avf_set.at[patient_index,"Loudness_std"] = np.std(filtered_base_features[29])
+            self.avf_set.at[patient_index,"F0_var"] = np.var(filtered_base_audio_features[28])
+            self.avf_set.at[patient_index,"F0_std"] = np.std(filtered_base_audio_features[28])
+            self.avf_set.at[patient_index,"Loudness_var"] = np.var(filtered_base_audio_features[29])
+            self.avf_set.at[patient_index,"Loudness_std"] = np.std(filtered_base_audio_features[29])
 
-            self.avf_set.at[patient_index,"jitter"] = np.var(filtered_base_features[30])
-            self.avf_set.at[patient_index,"shimmer"] = np.std(filtered_base_features[31])
-            self.avf_set.at[patient_index,"hnr"] = np.var(filtered_base_features[32])
+            self.avf_set.at[patient_index,"jitter"] = np.var(filtered_base_audio_features[30])
+            self.avf_set.at[patient_index,"shimmer"] = np.std(filtered_base_audio_features[31])
+            self.avf_set.at[patient_index,"hnr"] = np.var(filtered_base_audio_features[32])
+
+
+
+            # visual features
+            start_samples,end_samples = self.txt_parser.convert_time_to_row(30,start_times,end_times)
             
+             # visual feature values at specific times
+            au12_filtered=au_14_filtered=au_15_filtered = np.zeros(1)
+            
+            # put into a list
+            filtered_base_visual_features = [au12_filtered,au_14_filtered,au_15_filtered]
+
+            # go over all time splices and append to filtered feature lists
+            for start,end in zip(start_samples,end_samples):
+                for i,filtered_feature in enumerate(filtered_base_visual_features):
+                    filtered_base_visual_features[i]=np.append(filtered_base_visual_features[i],base_visual_features[i][start:end])
+  
+            self.avf_set.at[patient_index,"au_12"] = np.mean(filtered_base_visual_features[0])
+            self.avf_set.at[patient_index,"au_14"] = np.mean(filtered_base_visual_features[1])
+            self.avf_set.at[patient_index,"au_15"] = np.mean(filtered_base_visual_features[2])
+
         else:
             print("ERROR===============")
             exit()

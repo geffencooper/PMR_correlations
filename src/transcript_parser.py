@@ -133,19 +133,17 @@ class transcriptParser:
             mfccs.to_csv(path)
             exit()
 
-    def convert_time_to_row(self,start_times,end_times):
+    def convert_time_to_row(self,sample_rate,start_times,end_times):
         start_samples = []
         end_samples = []
-        sample_time = 0.01
-        sample_rate = 100
 
         # for st,et in zip(start_times,end_times):
         #     num_samples = (et-st)/sample_time
         #     start_samples.append(st/sample_time)
         #     end_samples.append(st/sample_time + num_samples)
 
-        start_samples = [int(x*100) for x in start_times]
-        end_samples = [int(x*100) for x in end_times]
+        start_samples = [int(x*sample_rate) for x in start_times]
+        end_samples = [int(x*sample_rate) for x in end_times]
 
         return (start_samples, end_samples)
 
