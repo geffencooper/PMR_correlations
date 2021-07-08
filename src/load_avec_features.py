@@ -97,6 +97,78 @@ class avecFeatures:
     def get_mfcc12(self):
         return self.mfccs["pcm_fftMag_mfcc[12]"].values
 
+    # get delta MFCC 0 as a numpy array
+    def get_mfcc0_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[0]"].values
+
+    # get delta MFCC 1 as a numpy array
+    def get_mfcc1_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[1]"].values
+
+    # get delta MFCC 2 as a numpy array
+    def get_mfcc2_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[2]"].values
+
+    # get delta MFCC 3 as a numpy array
+    def get_mfcc3_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[3]"].values
+
+    # get delta MFCC 4 as a numpy array
+    def get_mfcc4_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[4]"].values
+
+    # get delta MFCC 5 as a numpy array
+    def get_mfcc5_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[5]"].values
+
+    # get delta MFCC 6 as a numpy array
+    def get_mfcc6_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[6]"].values
+
+    # get delta MFCC 7 as a numpy array
+    def get_mfcc7_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[7]"].values
+
+    # get delta MFCC 8 as a numpy array
+    def get_mfcc8_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[8]"].values
+
+    # get delta MFCC 9 as a numpy array
+    def get_mfcc9_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[9]"].values
+
+    # get delta MFCC 10 as a numpy array
+    def get_mfcc10_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[10]"].values
+
+    # get delta MFCC 11 as a numpy array
+    def get_mfcc11_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[11]"].values
+
+    # get delta MFCC 12 as a numpy array
+    def get_mfcc12_delta(self):
+        return self.mfccs["pcm_fftMag_mfcc_de[12]"].values
+
+    # get F0 value as a numpy array
+    def get_f0(self):
+        return self.patient_egemaps["F0semitoneFrom27.5Hz_sma3nz"].values
+
+    # get loudness as a numpy array
+    def get_loudness(self):
+        return self.patient_egemaps["Loudness_sma3"].values
+
+    # get jitter as a numpy array
+    def get_jitter(self):
+        return self.patient_egemaps["jitterLocal_sma3nz"].values
+
+    # get shimmer as a numpy array
+    def get_shimmer(self):
+        return self.patient_egemaps["shimmerLocaldB_sma3nz"].values
+
+    # get HNR as a numpy array
+    def get_hnr(self):
+        return self.patient_egemaps["HNRdBACF_sma3nz"].values
+
     # plots the specified data arrays, data is a list of arrays
     def plot_data(self,data):
         for d in data:

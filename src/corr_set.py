@@ -19,13 +19,11 @@ class corrSet:
         self.labels = pd.read_csv(labels_path)
 
         # create a table of features and correlation coefficients
-        self.corr_set = pd.DataFrame(index=["corr_coeff"])
+        self.corr_set = pd.DataFrame(index=["corr_coeff","p"])
         for i,av in enumerate(self.avf_set):
             self.corr_set.insert(i,av,0.0)
-        
-        self.calc_corr()
 
-    def calc_corr(self):
+    def calc_corr(self,csv_out_path):
         # first extract data for patients that have labels
         label_ids = []
         data_ids = self.avf_set.index
@@ -41,10 +39,10 @@ class corrSet:
         # now find all the correlation coefficients
         for feature in self.avf_set:
             corr, p = stats.spearmanr(self.avf_set[feature].values,self.labels["PHQ_8Total"].values)
-            print("feature:", feature, "---> corr:", corr, "p: ", p)
-
-        # for index, row in self.labels.iterrows():
-        #     f1_list.append(self.avf_set.at[str(row[0])+"_P","f2_range"])
+            self.corr_set.at["corr_coeff",feature] = corr
+            self.corr_set.at["p",feature] = p
+            #print("feature:", feature, "---> corr:", corr, "p: ", p)
+        self.corr_set.to_csv(csv_out_path)
         
         
         # scores = self.labels["PHQ_8Total"].values

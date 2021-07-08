@@ -15,11 +15,9 @@ class transcriptParser:
         self.avec_path_prefix = avec_path_prefix
 
     # gets the approximate start and end times of every iteration
-    # of the desired text chunks (ex: /ai/)
+    # of the desired text chunks (ex: /ai/), if no chunks passed in then return
+    # the splices of the responses
     def get_time_splices(self,patient_num,text_chunks):
-        if text_chunks == None:
-            return (None,None)
-
         # get the transcript
         path = os.path.join(self.avec_path_prefix,
                             (str(patient_num)+"_P/"),
@@ -32,6 +30,9 @@ class transcriptParser:
         self.start_times = self.transcript["Start_Time"]
         self.stop_times = self.transcript["End_Time"]
 
+        if text_chunks == None:
+            return (self.start_times,self.stop_times)
+
         
         chunk_start_times = []
         chunk_end_times = []
@@ -39,8 +40,12 @@ class transcriptParser:
         # search for each chunk in each response
         for chunk in text_chunks:
             for resp_i, resp in enumerate(self.responses):
-                chunk_i = resp.find(chunk)
-                if chunk_i != -1:
+                chunk_i=0
+                while chunk_i < len(resp):
+                    chunk_i = resp.find(chunk,chunk_i)
+                    if chunk_i == -1:
+                        break
+
                     # the sample period for a response is the total time of the response divided by the number of letters --> (seconds per letter)
                     sample_period = (self.stop_times[resp_i]-self.start_times[resp_i])/(len(resp)+0) # may need to tune how we calculate this sample period
                     
@@ -62,6 +67,8 @@ class transcriptParser:
 
                     chunk_start_times.append(start)
                     chunk_end_times.append(end)
+
+                    chunk_i += len(chunk)
 
         return(chunk_start_times, chunk_end_times)
 
