@@ -52,10 +52,16 @@ if __name__ == "__main__":
     # table = avfSet("../../avec_data/",None)
     # table.avf_set.to_csv("../data/patient_features.csv")
 
-    features_path = "../data/patient_features.csv"
-    labels_path = "../data/Detailed_PHQ8_Labels.csv"
-    c = corrSet(features_path,labels_path)
-    c.calc_corr("../data/correlations.csv")
+    # features_path = "../data/patient_features.csv"
+    # labels_path = "../data/Detailed_PHQ8_Labels.csv"
+    # c = corrSet(features_path,labels_path)
+    # c.calc_corr("../data/correlations.csv",["PHQ_8Moving"])
+
+    txt_parser = tp("../../avec_data/")
+    start_times,end_times = txt_parser.get_time_splices_2("300",None)
+    print(start_times)
+    print(end_times)
+
     
         
 

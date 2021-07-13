@@ -7,6 +7,7 @@ of speech where their may be useful features
 
 import pandas as pd
 import os
+import os.path
 import numpy as np
 from load_avec_features import avecFeatures as lf
 
@@ -146,6 +147,66 @@ class transcriptParser:
         end_samples = [int(x*sample_rate) for x in end_times]
 
         return (start_samples, end_samples)
+
+    def get_time_splices_2(self,patient_num,text_chunks):
+        # get the transcript
+        path = os.path.join(self.avec_path_prefix,
+                            (str(patient_num)+"_P/"),
+                            (str(patient_num)+"_GTranscript_words.csv"))
+        
+        # check other file name
+        if os.path.isfile(path) == False:
+            path = os.path.join(self.avec_path_prefix,
+                            (str(patient_num)+"_P/"),
+                            (str(patient_num)+"_Scrubbed_GTranscript_words.csv"))
+            # use other method
+            if os.path.isfile(path) == False:
+                return self.get_time_splices(patient_num,text_chunks)
+
+        self.transcript = pd.read_csv(path)
+
+        # get the responses as a list and the time stamps as lists
+        self.responses = self.transcript['Word'].to_list()
+        self.start_times = self.transcript["Start_Time"]
+        self.stop_times = self.transcript["End_Time"]
+
+        if text_chunks == None:
+            return self.get_time_splices(patient_num,text_chunks)
+
+        
+        chunk_start_times = []
+        chunk_end_times = []
+
+        # search for each chunk in each response
+        for chunk in text_chunks:
+            for resp_i, resp in enumerate(self.responses):
+                chunk_i=0
+                if isinstance(resp,str) == False:
+                    continue
+                while chunk_i < len(resp):
+                    chunk_i = resp.find(chunk,chunk_i)
+                    if chunk_i == -1:
+                        break
+
+                    # start time is the start of the response in seconds plus the chunk starting location times the sample period
+                    start = self.start_times[resp_i]-0.5
+
+                    # end time is the start time plus the length of the chunk times the sample period
+                    end = self.stop_times[resp_i]+0.5
+
+                    # make sure we are in the bounds of the response (padding may take out of bounds)
+                    if start < 0:
+                        start = self.start_times[resp_i]
+
+                    if resp_i >= len(resp)-2:
+                        end = self.stop_times[resp_i]
+
+                    chunk_start_times.append(start)
+                    chunk_end_times.append(end)
+
+                    chunk_i += len(chunk)
+
+        return(chunk_start_times, chunk_end_times)
 
 
            

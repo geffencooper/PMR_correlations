@@ -23,7 +23,7 @@ class corrSet:
         for i,av in enumerate(self.avf_set):
             self.corr_set.insert(i,av,0.0)
 
-    def calc_corr(self,csv_out_path):
+    def calc_corr(self,csv_out_path,phq_scores):
         # first extract data for patients that have labels
         label_ids = []
         data_ids = self.avf_set.index
@@ -36,12 +36,19 @@ class corrSet:
         for id in to_remove:
             self.avf_set = self.avf_set.drop(index=id)
 
+        # initialize an empty scores array
+        phq_values = np.zeros(len(self.labels[phq_scores[0]]))
+
+        # sum accross the desired scores
+        for score in phq_scores:
+            phq_values += self.labels[score].values
+
         # now find all the correlation coefficients
         for feature in self.avf_set:
-            corr, p = stats.spearmanr(self.avf_set[feature].values,self.labels["PHQ_8Total"].values)
+            corr, p = stats.spearmanr(self.avf_set[feature].values,phq_values)
             self.corr_set.at["corr_coeff",feature] = corr
             self.corr_set.at["p",feature] = p
-            #print("feature:", feature, "---> corr:", corr, "p: ", p)
+            print("feature:", feature, "---> corr:", corr, "p: ", p)
         self.corr_set.to_csv(csv_out_path)
         
         

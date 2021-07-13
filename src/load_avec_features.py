@@ -191,8 +191,6 @@ class avecFeatures:
     def get_au15(self):
         return self.face_features["AU15_r"].values
 
-    
-
     # get vertical head pose as a numpy array
     def get_head_pitch(self):
         return self.face_features["pose_Rx"].values

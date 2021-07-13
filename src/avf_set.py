@@ -22,7 +22,7 @@ class avfSet:
                             "mfcc0","mfcc1","mfcc2","mfcc3","mfcc4","mfcc5","mfcc6","mfcc7","mfcc8","mfcc9","mfcc10","mfcc11","mfcc12", \
                             "mfcc0_de","mfcc1_de","mfcc2_de","mfcc3_de","mfcc4_de","mfcc5_de","mfcc6_de","mfcc7_de","mfcc8_de","mfcc9_de","mfcc10_de","mfcc11_de","mfcc12_de", \
                             "F0_var", "F0_std", "Loudness_var", "Loudness_std","jitter","shimmer","hnr", \
-                            "au_12","au_14","au_15"]
+                            "au_12","au_14","au_15","vert_head_pitch","vert_eye_gaze"]
         
         # create a table of patients and the corresponding features
         self.avf_set = pd.DataFrame(index=self.patients)
@@ -88,10 +88,13 @@ class avfSet:
         au14 = patient.get_au14()
         au15 = patient.get_au15()
 
+        head_pitch = patient.get_head_pitch()
+        eye_gaze = patient.get_eye_gaze()
+
         # put into a list
         base_audio_features = [f1,f2,mfcc0,mfcc1,mfcc2,mfcc3,mfcc4,mfcc5,mfcc6,mfcc7,mfcc8,mfcc9,mfcc10,mfcc11,mfcc12,del_mfcc0,del_mfcc1,del_mfcc2,del_mfcc3,del_mfcc4,del_mfcc5,del_mfcc6,del_mfcc7,del_mfcc8,del_mfcc9,del_mfcc10,del_mfcc11,del_mfcc12,f0,loudness,jitter,shimmer,hnr]
 
-        base_visual_features = [au12,au14,au15]
+        base_visual_features = [au12,au14,au15,head_pitch,eye_gaze]
 
         start_samples,end_samples = self.txt_parser.convert_time_to_row(100,start_times,end_times)
         if start_samples != None and end_samples != None:
@@ -171,10 +174,10 @@ class avfSet:
             start_samples,end_samples = self.txt_parser.convert_time_to_row(30,start_times,end_times)
             
              # visual feature values at specific times
-            au12_filtered=au_14_filtered=au_15_filtered = np.zeros(1)
+            au12_filtered=au_14_filtered=au_15_filtered=head_pitch_filtered=eye_gaze_filtered= np.zeros(1)
             
             # put into a list
-            filtered_base_visual_features = [au12_filtered,au_14_filtered,au_15_filtered]
+            filtered_base_visual_features = [au12_filtered,au_14_filtered,au_15_filtered,head_pitch_filtered,eye_gaze_filtered]
 
             # go over all time splices and append to filtered feature lists
             for start,end in zip(start_samples,end_samples):
@@ -184,6 +187,9 @@ class avfSet:
             self.avf_set.at[patient_index,"au_12"] = np.mean(filtered_base_visual_features[0])
             self.avf_set.at[patient_index,"au_14"] = np.mean(filtered_base_visual_features[1])
             self.avf_set.at[patient_index,"au_15"] = np.mean(filtered_base_visual_features[2])
+
+            self.avf_set.at[patient_index,"vert_head_pitch"] = np.mean(filtered_base_visual_features[3])
+            self.avf_set.at[patient_index,"vert_eye_gaze"] = np.mean(filtered_base_visual_features[4])
 
         else:
             print("ERROR===============")
