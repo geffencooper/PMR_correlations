@@ -44,28 +44,26 @@ class corrSet:
             phq_values += self.labels[score].values
 
         # now find all the correlation coefficients
+        print(phq_scores)
         for feature in self.avf_set:
             corr, p = stats.spearmanr(self.avf_set[feature].values,phq_values)
             self.corr_set.at["spearman_corr_coeff",feature] = corr
             self.corr_set.at["spearman_p",feature] = p
             if p < 0.05:
-                self.corr_set["spearman_meaningful",feature] = 1
+                self.corr_set.at["spearman_meaningful",feature] = 1
+                print("{:15s} sp_corr: {:5.5f}    p: {:5.5f}".format(feature, corr, p))
             else:
-                self.corr_set["spearman_meaningful",feature] = 0
-
-            print("spearman:")
-            print("feature:", feature, "---> corr:", corr, "p: ", p)
+                self.corr_set.at["spearman_meaningful",feature] = 0
 
             corr, p = stats.pearsonr(self.avf_set[feature].values,phq_values)
             self.corr_set.at["pearson_corr_coeff",feature] = corr
             self.corr_set.at["pearson_p",feature] = p
             if p < 0.05:
-                self.corr_set["pearson_meaningful",feature] = 1
+                self.corr_set.at["pearson_meaningful",feature] = 1
+                print("{:15s} pn_corr: {:5.5f}    p: {:5.5f}".format(feature, corr, p))
             else:
-                self.corr_set["pearson_meaningful",feature] = 0
+                self.corr_set.at["pearson_meaningful",feature] = 0
 
-            print("pearson")
-            print("feature:", feature, "---> corr:", corr, "p: ", p)
         self.corr_set.to_csv(csv_out_path)
         
         
