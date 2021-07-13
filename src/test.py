@@ -23,10 +23,11 @@ if __name__ == "__main__":
     # # c = corrSet(features_path,labels_path)
 
     '''get the text time splices'''
-    # txt_parser = tp(300,"../../avec_data/")
-    # starts,ends = txt_parser.get_time_splices(["ou"])
+    # txt_parser = tp("../../avec_data/")
+        
+    # starts,ends = txt_parser.get_time_splices_2("300",["igh","oi","ai","ie","ia"])
 
-    # test_text = False
+    # test_text = True
 
     # if test_text:
     #     interview, sr = librosa.load("../../avec_data/300_P/300_AUDIO.wav")
@@ -39,29 +40,45 @@ if __name__ == "__main__":
     #     chunks = []
     #     for i, splice in enumerate(starts):
     #         chunks.append(interview[int(starts[i]/sp):int(ends[i]/sp)]) 
+    #     n=0
+    #     while True:
+    #         n = int(input("enter n"))
+    #         sd.play(chunks[n],sr)
+    #         print(starts[n])
+    #         print(ends[n])
+    #         time.sleep(2)
+    #         sd.stop()
 
-    #     sd.play(chunks[1],sr)
-    #     print(starts[1])
-    #     print(ends[1])
-    #     time.sleep(3)
-    #     sd.stop()
+
+
 
     '''current test'''
-    # table = avfSet("../../avec_data/",["ou","igh","oi","ai"])
-    # table.avf_set.to_csv("../data/patient_features_filtered.csv")
+    
+    # features from all data
     # table = avfSet("../../avec_data/",None)
     # table.avf_set.to_csv("../data/patient_features.csv")
 
     # features_path = "../data/patient_features.csv"
     # labels_path = "../data/Detailed_PHQ8_Labels.csv"
-    # c = corrSet(features_path,labels_path)
-    # c.calc_corr("../data/correlations.csv",["PHQ_8Moving"])
 
-    txt_parser = tp("../../avec_data/")
-    start_times,end_times = txt_parser.get_time_splices_2("300",None)
-    print(start_times)
-    print(end_times)
+    # c = corrSet(features_path,labels_path)
+    # phq_scores = ["PHQ_8NoInterest","PHQ_8Depressed","PHQ_8Sleep","PHQ_8Tired","PHQ_8Appetite","PHQ_8Failure","PHQ_8Concentrating","PHQ_8Moving","PHQ_8Total"]
+    # for score in phq_scores:
+    #     c.calc_corr("../data/correlations"+score+ ".csv",[score])
 
     
+    # features from segments with vowel transitions
+    # table = avfSet("../../avec_data/",["igh","oi","ai","ie","ia"])
+    # table.avf_set.to_csv("../data/patient_features_filtered.csv")
+
+    features_path = "../data/patient_features_filtered.csv"
+    labels_path = "../data/Detailed_PHQ8_Labels.csv"
+
+    c = corrSet(features_path,labels_path)
+    phq_scores = ["PHQ_8NoInterest","PHQ_8Depressed","PHQ_8Sleep","PHQ_8Tired","PHQ_8Appetite","PHQ_8Failure","PHQ_8Concentrating","PHQ_8Moving","PHQ_8Total"]
+    for score in phq_scores:
+        c.calc_corr("../data/correlations_filtered"+score+ ".csv",[score])
+    
+ 
         
 

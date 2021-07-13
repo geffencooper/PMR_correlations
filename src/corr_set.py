@@ -19,7 +19,7 @@ class corrSet:
         self.labels = pd.read_csv(labels_path)
 
         # create a table of features and correlation coefficients
-        self.corr_set = pd.DataFrame(index=["corr_coeff","p"])
+        self.corr_set = pd.DataFrame(index=["spearman_corr_coeff","spearman_p","spearman_meaningful","pearson_corr_coeff","pearson_p","pearson_meaningful"])
         for i,av in enumerate(self.avf_set):
             self.corr_set.insert(i,av,0.0)
 
@@ -46,8 +46,25 @@ class corrSet:
         # now find all the correlation coefficients
         for feature in self.avf_set:
             corr, p = stats.spearmanr(self.avf_set[feature].values,phq_values)
-            self.corr_set.at["corr_coeff",feature] = corr
-            self.corr_set.at["p",feature] = p
+            self.corr_set.at["spearman_corr_coeff",feature] = corr
+            self.corr_set.at["spearman_p",feature] = p
+            if p < 0.05:
+                self.corr_set["spearman_meaningful",feature] = 1
+            else:
+                self.corr_set["spearman_meaningful",feature] = 0
+
+            print("spearman:")
+            print("feature:", feature, "---> corr:", corr, "p: ", p)
+
+            corr, p = stats.pearsonr(self.avf_set[feature].values,phq_values)
+            self.corr_set.at["pearson_corr_coeff",feature] = corr
+            self.corr_set.at["pearson_p",feature] = p
+            if p < 0.05:
+                self.corr_set["pearson_meaningful",feature] = 1
+            else:
+                self.corr_set["pearson_meaningful",feature] = 0
+
+            print("pearson")
             print("feature:", feature, "---> corr:", corr, "p: ", p)
         self.corr_set.to_csv(csv_out_path)
         

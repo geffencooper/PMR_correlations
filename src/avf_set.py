@@ -34,7 +34,7 @@ class avfSet:
         
         # extract the feature values and fill the table
         for patient_i, patient in enumerate(self.patients): # iterate over the rows
-            start_times,end_times = self.txt_parser.get_time_splices(patient[:-2],chunk_list)
+            start_times,end_times = self.txt_parser.get_time_splices_2(patient[:-2],chunk_list)
             #start_samples,end_samples = self.txt_parser.convert_time_to_row(start_times,end_times)
             self.extract_features(patient[:-2],start_times,end_times)
             print("patient:",patient,"num responses:",len(start_times))
