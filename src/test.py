@@ -59,7 +59,7 @@ if __name__ == "__main__":
     # table.avf_set.to_csv("../data/patient_features.csv")
 
     features_path = "../data/patient_features.csv"
-    labels_path = "../data/Detailed_PHQ8_Labels.csv"
+    labels_path = "../../avec_data/Detailed_PHQ8_Labels.csv"
 
     c = corrSet(features_path,labels_path)
     phq_scores = ["PHQ_8NoInterest","PHQ_8Depressed","PHQ_8Sleep","PHQ_8Tired","PHQ_8Appetite","PHQ_8Failure","PHQ_8Concentrating","PHQ_8Moving","PHQ_8Total"]
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # table.avf_set.to_csv("../data/patient_features_filtered.csv")
 
     features_path = "../data/patient_features_filtered.csv"
-    labels_path = "../data/Detailed_PHQ8_Labels.csv"
+    labels_path = "../../avec_data/Detailed_PHQ8_Labels.csv"
 
     c = corrSet(features_path,labels_path)
     phq_scores = ["PHQ_8NoInterest","PHQ_8Depressed","PHQ_8Sleep","PHQ_8Tired","PHQ_8Appetite","PHQ_8Failure","PHQ_8Concentrating","PHQ_8Moving","PHQ_8Total"]
