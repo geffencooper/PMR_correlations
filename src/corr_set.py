@@ -110,9 +110,9 @@ class corrSet:
         ax2.bar_label(pp,padding=3)
 
         fig1.tight_layout()
-        fig1.savefig("../data/spearman_"+phq_scores[0]+".png")
+        fig1.savefig(csv_out_path[:-3]+"_spearman_"+".png")
         fig2.tight_layout()
-        fig2.savefig("../data/pearson"+phq_scores[0]+".png")
+        fig2.savefig(csv_out_path[:-3]+"_pearson_"+".png")
         plt.show()
         
         self.corr_set.to_csv(csv_out_path)
