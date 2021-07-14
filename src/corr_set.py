@@ -81,10 +81,10 @@ class corrSet:
         
         x_sp = np.arange(len(labels_sp))
         x_pn = np.arange(len(labels_pn))
-        width = 0.35
+        width = 0.4
 
-        fig1,ax1 = plt.subplots()
-        fig2,ax2 = plt.subplots()
+        fig1,ax1 = plt.subplots(figsize=(12,5))
+        fig2,ax2 = plt.subplots(figsize=(12,5))
         
         sc=ax1.bar(x_sp+width/2,sp_c,width,label='Spearman Correlation')
         sp=ax1.bar(x_sp-width/2,sp_p,width,label='P-value')
