@@ -1,11 +1,14 @@
 import os
 import shutil
 
-dir_name = "C:/Users/gcooper/Downloads/drive-download-20210713T151601Z-001/"
-dest_path = "../../avec_data"
+dir_name = "../data/"
+dest_path_plot = "../data/plots"
+dest_path_csv = "../data/csv"
 
-files = [(dir_name + file_name) for file_name in os.listdir(dir_name)]
-# print(os.path.basename(files[0])[:4]+"P")
+files = [(dir_name + file_name) for file_name in os.listdir(dir_name) if (file_name.endswith('.png') or file_name.endswith('.csv'))]
 for f in files:
-    p = os.path.basename(f)[:4]+"P"
-    shutil.move(f,dest_path+"/"+p)
+    p = os.path.basename(f)
+    if p.endswith('.png'):
+        shutil.move(f,dest_path_plot+"/"+p)
+    if p.endswith('.csv'):
+        shutil.move(f,dest_path_csv+"/"+p)

@@ -109,10 +109,22 @@ class corrSet:
         ax2.bar_label(pc,padding=3)
         ax2.bar_label(pp,padding=3)
 
+        dest_path_sp=""
+        dest_path_pn=""
+        if "filtered" in csv_out_path:
+            dest_path_sp = "../data/plots/correlations_filtered_spearman_"+phq_scores[0]+".png"
+            dest_path_pn = "../data/plots/correlations_filtered_pearson_"+phq_scores[0]+".png"
+        else:
+            dest_path_sp = "../data/plots/correlations_spearman_"+phq_scores[0]+".png"
+            dest_path_pn = "../data/plots/correlations_pearson_"+phq_scores[0]+".png"
+
+        
+        
+
         fig1.tight_layout()
-        fig1.savefig(csv_out_path[:-3]+"_spearman_"+".png")
+        fig1.savefig(dest_path_sp)
         fig2.tight_layout()
-        fig2.savefig(csv_out_path[:-3]+"_pearson_"+".png")
+        fig2.savefig(dest_path_pn)
         plt.show()
         
         self.corr_set.to_csv(csv_out_path)
