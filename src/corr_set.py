@@ -22,6 +22,7 @@ class corrSet:
         self.corr_set = pd.DataFrame(index=["spearman_corr_coeff","spearman_p","spearman_meaningful","pearson_corr_coeff","pearson_p","pearson_meaningful"])
         for i,av in enumerate(self.corr_set):
             self.corr_set.insert(i,av,0.0)
+        
 
     def calc_corr(self,csv_out_path,phq_scores):
         # first extract data for patients that have labels
@@ -43,6 +44,13 @@ class corrSet:
         for score in phq_scores:
             phq_values += self.labels[score].values
 
+        labels_sp = []
+        labels_pn = []
+        sp_c = []
+        sp_p = []
+        pn_c =  []
+        pn_p = []
+
         # now find all the correlation coefficients
         print(phq_scores)
         for feature in self.avf_set:
@@ -52,6 +60,9 @@ class corrSet:
             if p < 0.05:
                 self.corr_set.at["spearman_meaningful",feature] = 1
                 print("{:15s} sp_corr: {:5.5f}    p: {:5.5f}".format(feature, corr, p))
+                labels_sp.append(feature)
+                sp_p.append(round(p,3))
+                sp_c.append(round(corr,3))
             else:
                 self.corr_set.at["spearman_meaningful",feature] = 0
 
@@ -61,9 +72,49 @@ class corrSet:
             if p < 0.05:
                 self.corr_set.at["pearson_meaningful",feature] = 1
                 print("{:15s} pn_corr: {:5.5f}    p: {:5.5f}".format(feature, corr, p))
+                labels_pn.append(feature)
+                pn_p.append(round(p,3))
+                pn_c.append(round(corr,3))
             else:
                 self.corr_set.at["pearson_meaningful",feature] = 0
 
+        
+        x_sp = np.arange(len(labels_sp))
+        x_pn = np.arange(len(labels_pn))
+        width = 0.35
+
+        fig1,ax1 = plt.subplots()
+        fig2,ax2 = plt.subplots()
+        
+        sc=ax1.bar(x_sp+width/2,sp_c,width,label='Spearman Correlation')
+        sp=ax1.bar(x_sp-width/2,sp_p,width,label='P-value')
+        pc=ax2.bar(x_pn+width/2,pn_c,width,label='Pearson Correlation')
+        pp=ax2.bar(x_pn-width/2,pn_p,width,label='P-value')
+
+        ax1.set_ylabel('Correlation and P values')
+        ax1.set_title('Feature Correlation with '+phq_scores[0]+'subscore')
+        ax1.set_xticks(x_sp)
+        ax1.set_xticklabels(labels_sp)
+        ax1.legend()
+
+        ax1.bar_label(sc,padding=3)
+        ax1.bar_label(sp,padding=3)
+
+        ax2.set_ylabel('Correlation and P values')
+        ax2.set_title('Feature Correlation with '+phq_scores[0]+'subscore')
+        ax2.set_xticks(x_pn)
+        ax2.set_xticklabels(labels_pn)
+        ax2.legend()
+
+        ax2.bar_label(pc,padding=3)
+        ax2.bar_label(pp,padding=3)
+
+        fig1.tight_layout()
+        fig1.savefig("../data/spearman_"+phq_scores[0]+".png")
+        fig2.tight_layout()
+        fig2.savefig("../data/pearson"+phq_scores[0]+".png")
+        plt.show()
+        
         self.corr_set.to_csv(csv_out_path)
         
         

@@ -74,10 +74,10 @@ if __name__ == "__main__":
     features_path = "../data/patient_features_filtered.csv"
     labels_path = "../data/Detailed_PHQ8_Labels.csv"
 
-    # c = corrSet(features_path,labels_path)
-    # phq_scores = ["PHQ_8NoInterest","PHQ_8Depressed","PHQ_8Sleep","PHQ_8Tired","PHQ_8Appetite","PHQ_8Failure","PHQ_8Concentrating","PHQ_8Moving","PHQ_8Total"]
-    # for score in phq_scores:
-    #     c.calc_corr("../data/correlations_filtered"+score+ ".csv",[score])
+    c = corrSet(features_path,labels_path)
+    phq_scores = ["PHQ_8NoInterest","PHQ_8Depressed","PHQ_8Sleep","PHQ_8Tired","PHQ_8Appetite","PHQ_8Failure","PHQ_8Concentrating","PHQ_8Moving","PHQ_8Total"]
+    for score in phq_scores:
+        c.calc_corr("../data/correlations_filtered"+score+ ".csv",[score])
 
     c = corrSet(features_path,labels_path)
     c.plot_values("au_12","PHQ_8Total")
