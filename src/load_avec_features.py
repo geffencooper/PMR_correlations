@@ -195,9 +195,9 @@ class avecFeatures:
     def get_head_pitch(self):
         return self.face_features["pose_Rx"].values
 
-    # get vertical eye gaze angle as a numpy array (avg over both eyes)
+    # get vertical eye gaze angle as a numpy array
     def get_eye_gaze(self):
-        return (self.face_features["gaze_0_y"].values + self.face_features["gaze_1_y"].values)/2
+        return self.face_features["gaze_angle_y"].values
 
     # plots the specified data arrays, data is a list of arrays
     def plot_data(self,data):

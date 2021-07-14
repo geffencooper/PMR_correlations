@@ -15,12 +15,12 @@ from scipy import stats
 class corrSet:
     def __init__(self,avf_path,labels_path):
         # load the features and the labels
-        self.avf_set = pd.read_csv(avf_path)
+        self.avf_set = pd.read_csv(avf_path,index_col=0)
         self.labels = pd.read_csv(labels_path)
 
         # create a table of features and correlation coefficients
         self.corr_set = pd.DataFrame(index=["spearman_corr_coeff","spearman_p","spearman_meaningful","pearson_corr_coeff","pearson_p","pearson_meaningful"])
-        for i,av in enumerate(self.avf_set):
+        for i,av in enumerate(self.corr_set):
             self.corr_set.insert(i,av,0.0)
 
     def calc_corr(self,csv_out_path,phq_scores):
@@ -32,7 +32,7 @@ class corrSet:
             label_ids.append(str(row[0])+"_P")
 
         to_remove = np.setdiff1d(data_ids,label_ids)
-        
+    
         for id in to_remove:
             self.avf_set = self.avf_set.drop(index=id)
 
@@ -70,3 +70,22 @@ class corrSet:
         # scores = self.labels["PHQ_8Total"].values
         # plt.scatter(f1_list,scores)
         # plt.show()
+
+    def plot_values(self,feature,score):
+        # first extract data for patients that have labels
+        label_ids = []
+        data_ids = self.avf_set.index
+
+        for index, row in self.labels.iterrows():
+            label_ids.append(str(row[0])+"_P")
+
+        to_remove = np.setdiff1d(data_ids,label_ids)
+    
+        for id in to_remove:
+            self.avf_set = self.avf_set.drop(index=id)
+
+        ft = self.avf_set[feature].values
+        sc = self.labels[score].values
+
+        plt.scatter(ft,sc)
+        plt.show()

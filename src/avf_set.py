@@ -119,6 +119,7 @@ class avfSet:
 
             f1_filtered = filtered_base_audio_features[0]
             f2_filtered = filtered_base_audio_features[1]   
+            
             self.avf_set.at[patient_index,"f1_mean"] = np.mean(f1_filtered)
             self.avf_set.at[patient_index,"f2_mean"] = np.mean(f2_filtered)
 

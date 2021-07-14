@@ -192,7 +192,7 @@ class transcriptParser:
                     start = self.start_times[resp_i]-0.5
 
                     # end time is the start time plus the length of the chunk times the sample period
-                    end = self.stop_times[resp_i]+1
+                    end = self.stop_times[resp_i]+0.5
 
                     # make sure we are in the bounds of the response (padding may take out of bounds)
                     if start < 0:
